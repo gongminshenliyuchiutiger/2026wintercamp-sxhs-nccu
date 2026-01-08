@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雙溪高中 x 政大寒假心理營</title>
+    <!-- 引入 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- 引入 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@500;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-green: #ccff00;
+            --neon-blue: #00ffff;
+            --neon-purple: #bd00ff;
+            --bg-color: #0d0015;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewport="0 0 24 24" style="fill:white;stroke:%23000;"><path d="M0 0l12 12-4 1 6 8-3 2-6-8-2 5z"/></svg>'), auto; /* 復古游標 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(rgba(13, 0, 21, 0.9), rgba(13, 0, 21, 0.9)),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, #111 2px), /* 掃描線 */
+                repeating-linear-gradient(90deg, transparent, transparent 19px, #222 20px);
+            font-family: 'Zen Maru Gothic', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            padding-bottom: 120px;
+            position: relative;
+        }
+
+        /* 背景漂浮特效 */
+        .bg-shapes {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .shape {
+            position: absolute;
+            color: rgba(255,255,255,0.05);
+            font-size: 2rem;
+            animation: floatUp 15s linear infinite;
+        }
+
+        /* 跑馬燈特效 */
+        .marquee-container {
+            background: var(--neon-pink);
+            color: #000;
+            padding: 5px 0;
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: scroll 15s linear infinite;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 標題區域 (Glitch Effect) */
+        header {
+            text-align: center;
+            margin: 40px 0;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        
+        /* 標題震動效果 class */
+        .shake-screen { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+        h1 {
+            font-size: 2.8rem;
+            text-shadow: 3px 3px 0px var(--neon-blue);
+            margin-bottom: 10px;
+            line-height: 1.4;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1:hover {
+            animation: glitch-anim 0.3s infinite;
+        }
+
+        h1::before, h1::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+        h1::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-pink);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            opacity: 0;
+        }
+        h1:hover::before { opacity: 1; }
+
+        .highlight-box {
+            display: inline-block;
+            background: var(--neon-green);
+            color: #000;
+            padding: 5px 15px;
+            font-weight: 900;
+            transform: rotate(-2deg);
+            border: 2px solid #fff;
+            box-shadow: 5px 5px 0px var(--neon-pink);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .highlight-box:active { transform: rotate(-2deg) scale(0.9); }
+
+        /* 通用卡片樣式 */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px var(--neon-blue), inset 0 0 10px rgba(0,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); }
+
+        .window-header {
+            background: linear-gradient(90deg, var(--neon-blue), #0000ff);
+            color: #fff;
+            padding: 8px 15px;
+            font-family: 'DotGothic16', sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body { padding: 25px; }
+
+        /* 圖卡 1 內容 */
+        .reward-banner {
+            background: linear-gradient(45deg, #ffcc00, #ff6600);
+            color: #000;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: glow 2s infinite alternate;
+            border: 2px dashed #000;
+        }
+
+        .point-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .point-item:hover { transform: translateX(10px); }
+        .icon-box {
+            font-size: 2rem;
+            color: var(--neon-pink);
+            margin-right: 15px;
+            min-width: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+        .spin-fast { animation: spin 0.5s linear infinite; }
+
+        .point-text h3 { color: var(--neon-green); margin-bottom: 5px; font-size: 1.3rem; }
+
+        /* 圖卡 2 內容 */
+        .check-list { list-style: none; }
+        .check-list li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            font-size: 1.1rem;
+        }
+        .check-list li i { color: var(--neon-blue); margin-right: 10px; }
+        .countdown {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #ff3333;
+            font-weight: bold;
+            margin-top: 20px;
+            animation: blink 0.5s infinite; /* 更快的閃爍 */
+        }
+
+        /* 課表樣式 */
+        .schedule-table-container {
+            overflow-x: auto;
+            border: 2px solid var(--neon-green);
+            background: #000;
+            box-shadow: 5px 5px 0px var(--neon-purple);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            border: 1px solid var(--neon-green);
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background: var(--neon-purple);
+            color: #fff;
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        td {
+            font-size: 1rem;
+            color: #eee;
+            line-height: 1.5;
+        }
+
+        td:first-child {
+            background: #1a1a1a;
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-family: 'DotGothic16', sans-serif;
+        }
+
+        .schedule-highlight {
+            color: var(--neon-pink);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        tr:hover td { background: rgba(204, 255, 0, 0.1); }
+
+        /* 長文字區塊 */
+        .terminal-card {
+            background: #000;
+            border: 2px solid var(--neon-green);
+            box-shadow: 5px 5px 0px rgba(0, 255, 0, 0.5);
+            font-family: 'DotGothic16', monospace;
+            margin-bottom: 30px;
+        }
+        .terminal-header {
+            background: var(--neon-green);
+            color: #000;
+            padding: 5px 10px;
+            font-weight: bold;
+        }
+        .terminal-body { padding: 20px; line-height: 1.8; color: #eee; }
+        .highlight { color: var(--neon-pink); font-weight: bold; }
+        .quote-box {
+            border-left: 4px solid var(--neon-blue);
+            padding-left: 15px;
+            margin: 15px 0;
+            color: #ccc;
+        }
+
+        /* 按鈕 */
+        .btn-container { text-align: center; margin: 40px 0; }
+        .retro-btn {
+            display: inline-block;
+            background: var(--neon-pink);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            padding: 15px 40px;
+            font-weight: 900;
+            border: 3px solid #fff;
+            box-shadow: 5px 5px 0px var(--neon-blue);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .retro-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px var(--neon-blue);
+            background: #ff33ff;
+            animation: pulse 0.5s infinite;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+        footer a {
+            color: #888;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        footer a:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+        }
+
+        /* 吉祥物樣式 - 修改定位方式 */
+        .mascot-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999; /* 確保最上層 */
+            width: 130px;
+            height: 150px; /* 預留高度給氣泡 */
+        }
+
+        #ken-mascot {
+            width: 130px;
+            height: auto;
+            cursor: grab;
+            transition: filter 0.2s, transform 0.1s;
+            user-select: none; 
+            -webkit-user-drag: none;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        #ken-mascot:hover {
+            filter: drop-shadow(0 0 10px var(--neon-green)) drop-shadow(0 0 15px var(--neon-blue));
+            transform: scale(1.05);
+        }
+
+        #ken-mascot:active { cursor: grabbing; }
+
+        /* 說話氣泡 - 優化顯示 */
+        .speech-bubble {
+            position: absolute;
+            bottom: 140px; /* 確保在頭上 */
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #fff;
+            color: #000;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            font-weight: bold;
+            font-size: 0.9rem;
+            width: 180px;
+            text-align: center;
+            border: 3px solid #000;
+            box-shadow: 5px 5px 0px var(--neon-pink);
+            display: block; /* 預設顯示但縮放為0 */
+            z-index: 10000;
+            pointer-events: none;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+        }
+        
+        .speech-bubble.show {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #000 transparent transparent transparent;
+        }
+
+        /* Party Mode (Konami Code) */
+        body.party-mode {
+            animation: rainbow-bg 2s infinite;
+        }
+        body.party-mode * {
+            animation: party-shake 0.5s infinite;
+        }
+
+        /* 動畫 Keyframes */
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes glow { 0% { box-shadow: 0 0 5px #ffcc00; } 100% { box-shadow: 0 0 20px #ff6600; } }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes floatUp { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        @keyframes rainbow-bg { 0% { background-color: #ff0000; } 20% { background-color: #ffff00; } 40% { background-color: #00ff00; } 60% { background-color: #00ffff; } 80% { background-color: #0000ff; } 100% { background-color: #ff00ff; } }
+        @keyframes party-shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -1px) rotate(1deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(10px, 9999px, 80px, 0); }
+            20% { clip: rect(40px, 9999px, 10px, 0); }
+            40% { clip: rect(80px, 9999px, 50px, 0); }
+            60% { clip: rect(20px, 9999px, 90px, 0); }
+            80% { clip: rect(50px, 9999px, 20px, 0); }
+            100% { clip: rect(30px, 9999px, 60px, 0); }
+        }
+
+        /* RWD */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .icon-box { font-size: 1.5rem; min-width: 40px; }
+            .card-body { padding: 15px; }
+            .mascot-container { width: 100px; height: 120px; }
+            #ken-mascot { width: 100px; }
+            .speech-bubble { width: 160px; font-size: 0.8rem; bottom: 110px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 動態漂浮背景 (由 JS 生成) -->
+    <div class="bg-shapes" id="bg-shapes"></div>
+
+    <!-- 頂部跑馬燈 -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <i class="fa-solid fa-bolt"></i> 寒假最強檔次 // 雙溪 x 政大 // <i class="fa-solid fa-gamepad"></i> 點按主任發現彩蛋 // <i class="fa-solid fa-fire"></i> 全程參與送禮券 // 不來會後悔
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header (彩蛋：瘋狂點擊會地震) -->
+        <header>
+            <div class="highlight-box" onclick="this.style.transform='rotate(180deg)'; setTimeout(()=>this.style.transform='rotate(-2deg)', 500);">
+                <i class="fa-solid fa-calendar-check"></i> 寒假限定
+            </div>
+            <h1 id="main-title" data-text="雙溪高中 x 政治大學 教育心理營">雙溪高中 <i class="fa-solid fa-xmark" style="font-size: 0.5em; vertical-align: middle;"></i> 政治大學<br>教育心理營</h1>
+            <p style="color: var(--neon-blue); letter-spacing: 2px;">WINTER EDUCATION CAMP 2026</p>
+        </header>
+
+        <!-- 圖卡 1 -->
+        <div class="card">
+            <div class="window-header">
+                <span><i class="fa-solid fa-floppy-disk"></i> Info.exe</span>
+                <div><i class="fa-regular fa-window-minimize"></i> <i class="fa-regular fa-square"></i> <i class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="card-body">
+                <div class="reward-banner">
+                    <i class="fa-solid fa-gift"></i> 全程參與者，頒發 200元 7-11 禮券 <i class="fa-solid fa-gift"></i>
+                </div>
+
+                <div class="point-item">
+                    <!-- 彩蛋：點擊 icon 旋轉 -->
+                    <div class="icon-box" onclick="spinIcon(this)"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="point-text">
+                        <h3>政大資源直送</h3>
+                        <p>不用搭火車去台北！政大團隊直接來雙溪找你，省時又省力。</p>
+                    </div>
+                </div>
+
+                <div class="point-item">
+                    <div class="icon-box" onclick="spinIcon(this)"><i class="fa-solid fa-file-shield"></i></div>
+                    <div class="point-text">
+                        <h3>升學檔案補血</h3>
+                        <p>讓你的學習歷程檔案多一項「與頂大合作」的超強紀錄，教授看了都說讚。</p>
+                    </div>
+                </div>
+
+                <div class="point-item">
+                    <div class="icon-box" onclick="spinIcon(this)"><i class="fa-solid fa-face-laugh-beam"></i></div>
+                    <div class="point-text">
+                        <h3>輕鬆無負擔</h3>
+                        <p>沒壓力、不考試，只有好玩的活動跟認識政大學長姐，開心玩就對了。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 圖卡 2 -->
+        <div class="card" style="border-color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink);">
+            <div class="window-header" style="background: linear-gradient(90deg, var(--neon-pink), #ff0055);">
+                <span><i class="fa-solid fa-user-group"></i> Target.exe</span>
+                <div><i class="fa-regular fa-window-minimize"></i> <i class="fa-regular fa-square"></i> <i class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="card-body">
+                <h2 style="text-align: center; margin-bottom: 20px; color: var(--neon-pink);">誰適合報名？</h2>
+                <ul class="check-list">
+                    <li><i class="fa-solid fa-graduation-cap"></i> 想知道大學生活到底在幹嘛的人 🎓</li>
+                    <li><i class="fa-solid fa-gamepad"></i> 寒假怕無聊、想跟同學一起混的人 👾</li>
+                    <li><i class="fa-solid fa-file-circle-exclamation"></i> 覺得學習歷程檔案空空如也，心裡很慌的人 📝</li>
+                    <li><i class="fa-solid fa-star"></i> 純粹想來認識政大正男、正女的大哥哥大姊姊的人 🌟</li>
+                </ul>
+                <div class="countdown">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 名額有限，報名截止倒數中！
+                </div>
+            </div>
+        </div>
+
+        <!-- 課表區域 -->
+        <div style="margin-bottom: 30px;">
+            <div class="highlight-box" style="background: var(--neon-purple); transform: rotate(1deg); margin-bottom: 10px;">
+                <i class="fa-solid fa-table"></i> 活動流程表 DATABASE
+            </div>
+            <div class="schedule-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>時間</th>
+                            <th>2/4 (三)</th>
+                            <th>2/5 (四)</th>
+                            <th>2/6 (五)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>07:30 - 08:30</td>
+                            <td>報到</td>
+                            <td>起床、早餐</td>
+                            <td>起床、早餐<br>出發到政大</td>
+                        </tr>
+                        <tr>
+                            <td>09:00 - 12:00</td>
+                            <td>
+                                <span class="schedule-highlight">開幕 + 流程介紹</span>
+                                相見歡破冰
+                            </td>
+                            <td><i class="fa-solid fa-chess-board"></i> 超大地遊戲</td>
+                            <td>
+                                <span class="schedule-highlight">一日政大生 Part.1</span>
+                                英文系、政大 X 學院<br>參訪 & 活動
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>12:00 - 13:00</td>
+                            <td><i class="fa-solid fa-burger"></i> 午餐</td>
+                            <td><i class="fa-solid fa-burger"></i> 午餐</td>
+                            <td><i class="fa-solid fa-burger"></i> 午餐</td>
+                        </tr>
+                        <tr>
+                            <td>13:00 - 17:00</td>
+                            <td>
+                                <span class="schedule-highlight">&lt;&lt; 給未來的你 &gt;&gt;</span>
+                                生涯探索體驗
+                            </td>
+                            <td>
+                                超大地遊戲・各組資訊整合<br>
+                                學習策略經驗分享<br>
+                                <span class="schedule-highlight">學習歷程大探索</span>
+                            </td>
+                            <td>
+                                <span class="schedule-highlight">一日政大生 Part.2</span>
+                                政大校園導覽<br>
+                                <!-- 修改：移除超連結，僅保留文字 -->
+                                <span style="color:var(--neon-blue);">參觀達賢圖書館</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>17:00 - 18:00</td>
+                            <td>晚餐</td>
+                            <td>晚餐</td>
+                            <td>
+                                <span class="schedule-highlight">解散</span>
+                                (遊覽車至動物園和北車)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>18:00 - 20:00</td>
+                            <td>
+                                <span class="schedule-highlight">&lt;&lt; 社交不心累: 一場心靈 SPA &gt;&gt;</span>
+                                SEL 探索
+                            </td>
+                            <td>
+                                <span class="schedule-highlight">&lt;&lt; 停止想太多 —— 找回平靜自我 &gt;&gt;</span>
+                                SEL 探索
+                            </td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 長文字區塊 -->
+        <div class="terminal-card">
+            <div class="terminal-header">
+                <i class="fa-solid fa-terminal"></i> Message from Director - C:\Users\Counseling>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-text">
+                    <h3 style="color: var(--neon-green); margin-bottom: 20px;">【關於寒假，我想給你一個不一樣的機會】</h3>
+                    <p>各位同學好，我是輔導主任 <i class="fa-regular fa-face-smile"></i></p>
+                    <p>說實話，主任平常很不喜歡一直「推銷」活動，因為我知道大家平時讀書已經很累了。但這次，我真的很希望大家能聽我說幾句。</p>
+                    
+                    <div class="quote-box">
+                        為了讓雙溪的孩子能有更好的資源，我們費了不少勁，才邀請到政治大學的團隊在寒假來到我們學校辦營隊。
+                    </div>
+
+                    <p>這不是那種坐在教室聽課的補習班，而是一場讓你們跟全台灣最優秀的大學生交流、玩遊戲、探索未來的聚會 <i class="fa-solid fa-rocket"></i></p>
+                    <p>我不愛碎念，因為好機會是不等人的。名額真的所剩不多，如果你還在猶豫，這可能就是最後一波上車的機會。</p>
+                    <p style="text-align: right; color: var(--neon-pink);">1/16 截止 <i class="fa-regular fa-clock"></i></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA 按鈕 -->
+        <div class="btn-container">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfprkRgXF3C1sz4UlHp7zB4VNoGxapYr6WRc5B2U_FVKRINhw/viewform" target="_blank" class="retro-btn">
+                <i class="fa-solid fa-hand-pointer"></i> 點這裡報名
+            </a>
+        </div>
+
+        <footer>
+            <!-- 懸停變色，不要底線 -->
+            <a href="https://www.facebook.com/happyliyuchilltiger" target="_blank">
+                Copyright © Liyuchiutiger Gongminshen
+            </a>
+        </footer>
+    </div>
+
+    <!-- 吉祥物 & 氣泡 -->
+    <!-- 外層容器負責定位，讓氣泡和圖片成為一個群組 -->
+    <div class="mascot-container" id="mascot-wrapper">
+        <div class="speech-bubble" id="bubble">嗨！我是最帥氣的志驅主任！</div>
+        <img id="ken-mascot" src="image/Ken.png" alt="Ken 吉祥物" draggable="false">
+    </div>
+
+    <script>
+        // === 1. 吉祥物互動邏輯 ===
+        const mascotWrapper = document.getElementById('mascot-wrapper');
+        const kenMascot = document.getElementById('ken-mascot');
+        const bubble = document.getElementById('bubble');
+        
+        let isDragging = false;
+        let startX, startY; // 用來判斷是點擊還是拖曳
+        let offsetX, offsetY;
+        let bubbleTimeout;
+
+        const phrases = [
+            "嗨！我是最帥氣的志驅主任！",
+            "快來一起學習嘛！^___< 志驅驅等你喲！",
+            "雙溪高中就是讚！",
+            "雙溪高中與政治大學聯手出擊！",
+            "穿上了公民神的衣服，整個人都神起來了呵呵！"
+        ];
+
+        function speak() {
+            // 清除之前的計時器
+            if (bubbleTimeout) clearTimeout(bubbleTimeout);
+            
+            // 隨機選一句
+            const text = phrases[Math.floor(Math.random() * phrases.length)];
+            bubble.innerText = text;
+            
+            // 顯示氣泡 (添加 class)
+            bubble.classList.add('show');
+
+            // 3秒後消失
+            bubbleTimeout = setTimeout(() => {
+                bubble.classList.remove('show');
+            }, 3000);
+        }
+
+        // 電腦版拖曳事件
+        kenMascot.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            
+            const rect = mascotWrapper.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            kenMascot.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+                mascotWrapper.style.left = `${x}px`;
+                mascotWrapper.style.top = `${y}px`;
+                mascotWrapper.style.bottom = 'auto'; // 移除 bottom 定位
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                kenMascot.style.cursor = 'grab';
+                
+                // 計算移動距離，如果小於 5px 視為點擊
+                const moveX = Math.abs(e.clientX - startX);
+                const moveY = Math.abs(e.clientY - startY);
+                
+                if (moveX < 5 && moveY < 5) {
+                    speak();
+                }
+            }
+        });
+
+        // 手機版觸控事件
+        kenMascot.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            isDragging = true;
+
+            const rect = mascotWrapper.getBoundingClientRect();
+            offsetX = touch.clientX - rect.left;
+            offsetY = touch.clientY - rect.top;
+        }, {passive: false});
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const touch = e.touches[0];
+                e.preventDefault();
+                const x = touch.clientX - offsetX;
+                const y = touch.clientY - offsetY;
+                mascotWrapper.style.left = `${x}px`;
+                mascotWrapper.style.top = `${y}px`;
+                mascotWrapper.style.bottom = 'auto';
+            }
+        }, {passive: false});
+
+        kenMascot.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                const touch = e.changedTouches[0];
+                const moveX = Math.abs(touch.clientX - startX);
+                const moveY = Math.abs(touch.clientY - startY);
+                
+                if (moveX < 5 && moveY < 5) {
+                    speak();
+                }
+            }
+        });
+
+        // === 2. 背景生成 (Dynamic Background) ===
+        const bgContainer = document.getElementById('bg-shapes');
+        const icons = ['fa-star', 'fa-heart', 'fa-bolt', 'fa-ghost', 'fa-floppy-disk', 'fa-music', 'fa-face-smile'];
+        
+        for (let i = 0; i < 20; i++) {
+            const el = document.createElement('i');
+            el.classList.add('fa-solid', icons[Math.floor(Math.random() * icons.length)], 'shape');
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            el.style.opacity = Math.random() * 0.1;
+            el.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+            bgContainer.appendChild(el);
+        }
+
+        // === 3. 彩蛋：圖示旋轉 ===
+        function spinIcon(element) {
+            element.classList.add('spin-fast');
+            setTimeout(() => {
+                element.classList.remove('spin-fast');
+            }, 1000);
+        }
+
+        // === 4. 彩蛋：標題連擊地震 ===
+        let titleClickCount = 0;
+        const mainTitle = document.getElementById('main-title');
+        mainTitle.addEventListener('click', () => {
+            titleClickCount++;
+            if (titleClickCount >= 5) {
+                document.body.classList.add('shake-screen');
+                setTimeout(() => document.body.classList.remove('shake-screen'), 500);
+                titleClickCount = 0;
+            }
+        });
+
+        // === 5. 彩蛋：Konami Code (派對模式) ===
+        const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    document.body.classList.toggle('party-mode');
+                    speak(); // 主任也說話慶祝
+                    bubble.innerText = "派對模式啟動！";
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+    </script>
+</body>
+</html>
